@@ -1,88 +1,58 @@
-var containerEl = document.querySelector(".container");
-
-
-var events = [];
-
-
-var displayDate = function() {
-    var date = moment().format('dddd, MMMM Do');
-
-    $('#currentDay').text(date);
-};
-
-
-setInterval (function(){
-    colourCoded();
-}, (1000 * 60) * 60);
-
-
-var colourCoded = function() {
+$(document).ready(function () {
     
-    $('.description').each(function() {
-        
-        var eventTime = $(this).attr("id");
-
-        
-        var currentTime = moment().hour();
-
-    
-        if (currentTime == eventTime) {
-            $(this).removeClass();
-            $(this).addClass("present col-10 description");
-        } else if (currentTime > eventTime) {
-            $(this).removeClass();
-            $(this).addClass("past col-10 description");
-        } else if (currentTime < eventTime) {
-            $(this).removeClass();
-            $(this).addClass("future col-10 description");
-        }
+    $(".saveBtn").click(function () {
+     
+      var userInput = $(this).siblings(".description").val();
+      var timeBlock = $(this).parent().attr("id");
+  
+      console.log("parent ID and userINPUT", userInput, timeBlock);
+      localStorage.setItem(timeBlock, userInput);
     });
-};
-
-
-$(".time-block").on("click", ".saveBtn", function() {
-    
-    var eventTime = $(this)
-    .closest(".time-block")
-    .find(".description")
-    .attr("id");
-
-    var eventDescription = $(this)
-    .closest(".time-block")
-    .find(".description")
-    .val()
-    .trim();
-
-    var savedEvent = {
-        time: eventTime,
-        description: eventDescription
+  
+    function getCurrentDate() {
+      
+        document.getElementById("currentDay").innerHTML =
+        moment().format("dddd MMMM YYYY");
     }
-    console.log(savedEvent);
     
-    events.push(savedEvent);
-    console.log(events);
+    getCurrentDate();
     
-    saveEvent();
-});
-
-var saveEvent = function() {
-    localStorage.setItem("events", JSON.stringify(events));
-};
-
-
-var loadEvents = function() {
-    var localStorageEvents = JSON.parse(localStorage.getItem("events"));
-
-
-    
-    for (var i =0; i < localStorageEvents.length; i++) {
-        console.log();
-    var selectorId = localStorageEvents[i].time;
-    
-       document.getElementById(selectorId).value = localStorageEvents[i].description;
+    function getCurrentTime() {
+     
+        var currentTime = moment().hours();
+  
+      $(".time-block").each(function () {
+       
+        var timeBlockValue = parseInt($(this).attr("value"));
+        console.log(timeBlockValue);
+  
+        if (timeBlockValue < currentTime) {
+          
+            $(this).addClass("past");
+       
+        } else if (timeBlockValue === currentTime) {
+          
+            $(this).addClass("present");
+       
+        } else {
+          
+            $(this).addClass("future");
+        }
+      });
     }
-};
+    
+    getCurrentTime();
+  
+    $("#hour-8 .description").val(localStorage.getItem("hour-8"));
+    $("#hour-9 .description").val(localStorage.getItem("hour-9"));
+    $("#hour-10 .description").val(localStorage.getItem("hour-10"));
+    $("#hour-11 .description").val(localStorage.getItem("hour-11"));
+    $("#hour-12 .description").val(localStorage.getItem("hour-12"));
+    $("#hour-1 .description").val(localStorage.getItem("hour-1"));
+    $("#hour-2 .description").val(localStorage.getItem("hour-2"));
+    $("#hour-3 .description").val(localStorage.getItem("hour-3"));
+    $("#hour-4 .description").val(localStorage.getItem("hour-4"));
+    $("#hour-5 .description").val(localStorage.getItem("hour-5"));
+    $("#hour-6 .description").val(localStorage.getItem("hour-6"));
+  });
 
-loadEvents();
-displayDate();
-colourCoded();
